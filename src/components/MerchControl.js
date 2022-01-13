@@ -64,6 +64,45 @@ class MerchControl extends React.Component {
     });
   }
 
+  handeIncreasingMerch = (id) => {
+    console.log(this.state.mainMerchList)
+    if (this.state.mainMerchList.length > 1) {
+      const selectedMerch = this.state.mainMerchList.filter(merch => merch.id === id)[0]
+      selectedMerch.quantity ++;
+      const newMainMerchList = this.state.mainMerchList.filter(merch => merch.id !== id).concat(selectedMerch);
+      this.setState({
+        mainMerchList: newMainMerchList});
+    } else {
+      const selectedMerch = this.state.mainMerchList.filter(merch => merch.id === id)[0]
+      selectedMerch.quantity ++;
+      const newMerchListArray = []
+      const changedMerchArray = newMerchListArray.concat(selectedMerch);
+      this.setState({
+        mainMerchList: changedMerchArray
+      });
+    }
+  }
+  
+  handleDecreasingMerch = (id) => {
+    console.log(this.state.mainMerchList);
+    if(this.state.mainMerchList.length > 1) {
+      const selectedMerch = this.state.mainMerchList.filter(merch => merch.id === id)[0]
+      selectedMerch.quantity --;
+      const newMainMerchList = this.state.mainMerchList.filter(merch => merch.id !== id).concat(selectedMerch);
+      this.setState({
+        mainMerchList: newMainMerchList
+      });
+    } else {
+      const selectedMerch = this.state.mainMerchList.filter(merch => merch.id === id)[0]
+      selectedMerch.quantity --;
+      const newMainMerchList = [];
+      const changedMerchArray = newMainMerchList.concat(selectedMerch);
+      this.setState({
+        mainMerchList: changedMerchArray
+      });
+    }
+  }
+
   render(){
     let currentlyVisibleState = null;
     let buttonText = null;
@@ -76,7 +115,9 @@ class MerchControl extends React.Component {
       currentlyVisibleState = <MerchDetail 
       merch = {this.state.selectedMerch} 
       onClickingDelete = {this.handleDeletingMerch} 
-      onClickingEdit = {this.handleEditClick} />
+      onClickingEdit = {this.handleEditClick} 
+      onClickingIncrease = {this.handeIncreasingMerch}
+      onClickingDecrease = {this.handleDecreasingMerch}/>
       buttonText = "Return to Merch List";
     }
     else if (this.state.formVisibleOnPage){
