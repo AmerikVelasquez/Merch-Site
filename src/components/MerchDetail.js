@@ -12,8 +12,8 @@ function MerchDetail(props) {
       <p>Quantity: {merch.quantity}</p>
       <button onClick = {props.onClickingEdit}>Update Merch</button>
       <button onClick = {()=> onClickingDelete(merch.id)}> Close Merch</button>
-      <button onClick = {() => onClickingIncrease(merch.id)}> Increase Merch </button>
-      <button onClick = {() => onClickingDecrease(merch.id)}> Decrease Merch </button>
+      <button onClick = {() => onClickingIncrease(merch.id)}> Restock </button>
+      <button onClick = {() => onClickingDecrease(merch.id)}> Buy </button>
     </React.Fragment>
   );
 }
