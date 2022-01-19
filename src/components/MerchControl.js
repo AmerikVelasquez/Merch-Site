@@ -3,14 +3,16 @@ import NewMerchForm from './NewMerchForm';
 import MerchList from './MerchList';
 import MerchDetail from './MerchDetail';
 import EditMerchForm from './EditMerchForm';
+import {connect} from 'react-redux';
+import PropTypes from 'prop-types';
+import* as a from './../actions';
 
 class MerchControl extends React.Component {
   
   constructor(props){
     super(props);
     this.state = {
-      formVisibleOnPage: false,
-      mainMerchList: [],
+      
       selectedMerch: null,
       editing: false
     };
@@ -19,34 +21,37 @@ class MerchControl extends React.Component {
   handleClick = () => {
     if (this.state.selectedMerch != null){
       this.setState({
-        formVisibleOnPage: false,
+       
         selectedMerch: null,
         editing: false
       });
     } else {
-      this.setState(prevState => ({
-      formVisibleOnPage: !prevState.formVisibleOnPage
-      }));
+      const { dispatch } = this.props;
+      const action = a.toggleForm();
+      dispatch(action);
     }
+    
   }
 
   handleAddingNewMerchToList = (newMerch) =>{
-    const newMainMerchList = this.state.mainMerchList.concat(newMerch);
-    this.setState({mainMerchList: newMainMerchList,
-      formVisibleOnPage: false});
+    const {dispatch} = this.props;
+    const {id, name, description, quantity} = newMerch;
+    const action = a.addMerch(newMerch);
+    dispatch(action);
+  const action2 = a.toggleForm();
+  dispatch(action2);
   }
 
   handleChangingSelectedMerch = (id) => {
-    const selectedMerch = this.state.mainMerchList.filter(merch => merch.id === id)[0];
+    const selectedMerch = this.props.mainMerchList[id];
     this.setState({selectedMerch: selectedMerch});
   }
 
   handleDeletingMerch = (id) => {
-    const newMainMerchList = this.state.mainMerchList.filter(merch => merch.id !== id);
-    this.setState({
-      mainMerchList: newMainMerchList,
-      selectedMerch: null
-    });
+    const { dispatch } = this.props;
+    const action = a.deleteMerch(id);
+    dispatch(action);
+    this.setState({selectedMerch: null});
   }
 
   handleEditClick = () =>{
@@ -54,11 +59,12 @@ class MerchControl extends React.Component {
   }
 
   handleEditingMerchInList = (merchToEdit) => {
-    const editedMainMerchList = this.state.mainMerchList
-      .filter(merch => merch.id !== this.state.selectedMerch.id)
-      .concat(merchToEdit);
+    const { dispatch } = this.props;
+    const { id, name, description, quantity } = merchToEdit;
+    const action = a.addMerch(merchToEdit);
+
+    dispatch(action);
     this.setState({
-      mainMerchList: editedMainMerchList,
       editing: false,
       selectedMerch: null
     });
@@ -79,11 +85,11 @@ class MerchControl extends React.Component {
       onClickingEdit = {this.handleEditClick} />
       buttonText = "Return to Merch List";
     }
-    else if (this.state.formVisibleOnPage){
+    else if (this.props.formVisibleOnPage){
       currentlyVisibleState= <NewMerchForm  onNewMerchCreation={this.handleAddingNewMerchToList}/>
       buttonText = "Return to Merch List";
     } else {
-      currentlyVisibleState = <MerchList merchList = {this.state.mainMerchList}  onMerchSelection={this.handleChangingSelectedMerch}/>
+      currentlyVisibleState = <MerchList merchList = {this.props.mainMerchList}  onMerchSelection={this.handleChangingSelectedMerch}/>
       buttonText = "Add Merch";
     }
     return (
@@ -94,6 +100,17 @@ class MerchControl extends React.Component {
     );
   }
 }
+MerchControl.propTypes = {
+  mainMerchList: PropTypes.object,
+  formVisibleOnPage: PropTypes.bool
+};
 
+const mapStateToProps = state => {
+  return {
+    mainMerchList: state.mainMerchList,
+    formVisibleOnPage: state.formVisibleOnPage  
+  }
+}
+MerchControl = connect(mapStateToProps)(MerchControl);
 
 export default MerchControl;

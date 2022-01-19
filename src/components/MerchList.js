@@ -8,12 +8,13 @@ function MerchList(props) {
   return (
     <React.Fragment>
       <hr />
-      {props.merchList.map((merch) => 
+      {Object.values(props.merchList).map((merch) => 
         <Merch 
           whenMerchClicked = {props.onMerchSelection}
           name={merch.name}
           description={merch.description}
           quantity={merch.quantity}
+          formattedWaitTime = {merch.formattedWaitTime}
           id = {merch.id}
           key={merch.id}
           />
@@ -23,7 +24,7 @@ function MerchList(props) {
 }
 
 MerchList.propTypes = {
-  merchList: PropTypes.array,
+  merchList: PropTypes.object,
   onMerchSelection: PropTypes.func
 };
 
